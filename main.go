@@ -1,25 +1,10 @@
 package main
 
 import (
-	"io"
 	"log"
-	"net/http"
+
+	"github.com/Windmill787-golang/api-client/cat"
 )
-
-type CatImage struct {
-	ID     string `json:"id"`
-	Url    string `json:"url"`
-	Width  string `json:"width"`
-	Height string `json:"height"`
-}
-
-var api_url = "https://api.thecatapi.com/v1/images/search"
-
-func logError(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 func main() {
 	//choose api with get, post methods and auth with token
@@ -31,13 +16,10 @@ func main() {
 	//post will return success or error
 
 	//add auth func
-	resp, err := http.Get(api_url)
-	logError(err)
+	catImages, err := cat.GetCatImages()
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	logError(err)
-
-	log.Println(string(body))
+	log.Println(catImages)
 }
