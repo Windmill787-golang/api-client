@@ -2,24 +2,29 @@ package cat
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
-	"os"
+	// "os"
 
 	_ "github.com/joho/godotenv/autoload"
 )
 
 var (
-	api_url = "https://api.thecatapi.com/v1/images/search"
+	api_url = "https://api.thecatapi.com/v1/images"
 	client  = *http.DefaultClient
 )
 
-func GetCatImages() ([]CatImage, error) {
-	req, err := http.NewRequest("GET", api_url, nil)
+func GetCatImages(count int) ([]CatImage, error) {
+	url := fmt.Sprintf("%s/search?limit=%d", api_url, count)
+
+	fmt.Println(url)
+
+	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("x-api-key", os.Getenv("API_KEY"))
+	// req.Header.Set("x-api-key", os.Getenv("API_KEY"))
 
 	resp, err := client.Do(req)
 	if err != nil {
@@ -39,4 +44,12 @@ func GetCatImages() ([]CatImage, error) {
 	}
 
 	return catImages, nil
+}
+
+func GetCatImage(id string) (CatImage, error) {
+	return CatImage{}, fmt.Errorf("method not implemented")
+}
+
+func CreateCatImage(c CatImage) error {
+	return fmt.Errorf("method not implemented")
 }

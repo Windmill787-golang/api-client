@@ -16,10 +16,12 @@ func main() {
 	//post will return success or error
 
 	//add auth func
-	catImages, err := cat.GetCatImages()
+	catImages, err := cat.GetCatImages(2)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	log.Println(catImages)
+	for _, catImage := range catImages {
+		log.Println(catImage.Info())
+	}
 }
