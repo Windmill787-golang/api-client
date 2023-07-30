@@ -7,7 +7,6 @@ type CatImage struct {
 	Url    string `json:"url"`
 	Width  int    `json:"width"`
 	Height int    `json:"height"`
-	Size   string `json:"size"`
 }
 
 func (c *CatImage) Info() string {
