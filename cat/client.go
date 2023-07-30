@@ -27,7 +27,6 @@ var (
 )
 
 func executeRequest(method, url string) (*http.Response, error) {
-	fmt.Println(url)
 
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
@@ -40,6 +39,7 @@ func executeRequest(method, url string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("[%s] %s - %d\n", method, url, resp.StatusCode)
 	return resp, err
 }
 
@@ -109,24 +109,36 @@ func GetCatImage(id string) (*CatImage, error) {
 	return &catImage, nil
 }
 
-func UploadCatImage(filename string) (string, error) {
-	u := fmt.Sprintf("%s/upload", api_url)
+func UploadCatImage(filename string) (*CatImage, error) {
+	url := fmt.Sprintf("%s/upload", api_url)
 
 	client := resty.New()
 
 	resp, err := client.R().
 		SetHeader("x-api-key", os.Getenv("CAT_API_KEY")).
 		SetFile("file", filename).
-		Post(u)
+		Post(url)
 
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	var r uploadResponse
 	if err = json.Unmarshal(resp.Body(), &r); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return r.ID, nil
+	return &r.CatImage, nil
+}
+
+func DeleteCatImage(id string) error {
+	url := fmt.Sprintf("%s/%s", api_url, id)
+
+	resp, err := executeRequest("DELETE", url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	return nil
 }
